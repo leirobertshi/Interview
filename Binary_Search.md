@@ -64,6 +64,10 @@ Since the return type is an integer, the decimal digits are truncated and only t
 
 [Search in Roated Array](https://leetcode.com/problems/search-in-rotated-sorted-array/description/) 
 
+Idea: **search in roated array**, check left and mid, if they are in order and if the target is between them. 
+
+**search the minim in rotated array**, check mid and left, to see if left part is in ascending order. 
+
 ```c++
     int search(vector<int>& A, int target) {
     int lo = 0;
@@ -91,6 +95,39 @@ Since the return type is an integer, the decimal digits are truncated and only t
         return -1;
     }
 ```
+
+
+
+Search in Roated Array 2
+
+```c++
+    bool search(vector<int>& nums, int target) {
+        int left = 0, right =  nums.size()-1, mid;
+        
+        while(left<=right)
+        {
+            mid = (left + right) >> 1;
+            if(nums[mid] == target) return true;
+
+            // the only difference from the first one, trickly case, just updat left and right
+            if( (nums[left] == nums[mid]) && (nums[right] == nums[mid]) ) {++left; --right;}
+
+            else if(nums[left] <= nums[mid])
+            {
+                if( (nums[left]<=target) && (nums[mid] > target) ) right = mid-1;
+                else left = mid + 1; 
+            }
+            else
+            {
+                if((nums[mid] < target) &&  (nums[right] >= target) ) left = mid+1;
+                else right = mid-1;
+            }
+        }
+        return false;
+    }
+```
+
+
 
 
 
@@ -135,6 +172,79 @@ int binarySearch(vector<int>& nums, int target){
 - Termination: `left == right`
 - Searching Left: `right = mid`
 - Searching Right: `left = mid+1`
+
+**Question** [153 Find minimum in the rotated array](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/description/)
+
+solution with Template 2
+
+```c++
+int findMin(vector<int> &num) {
+        int start=0,end=num.size()-1;
+        
+        while (start<end) {
+            if (num[start]<num[end])
+                return num[start];
+            
+            int mid = (start+end)/2;
+            
+            if (num[mid]>num[end]) {
+                start = mid+1;
+            } else {
+                end = mid;
+            }
+        }
+        
+        return num[start];
+    }
+```
+
+**Idea about when to use template 1 and template 2**
+
+Just think of it in general for a binary search, you have an array and you do two steps. First you see if what you're looking at now is the answer. In this case we want to see if start is less than end. Ok now if that's not true then you go on to the second step, which is to divide the array into two parts. From start to mid, and mid + 1 to end. Now you chose which side of the array brings your closer to the solution and go back to step 1.
+
+The point is, if we do as you say, which is to say end = mid - 1, then you are always leaving out an element when you divide the array in half. So therefore you aren't dividing it into two contiguous halves.
+
+Here's an example to prove the point.
+Line 1 [4, 7, 8, 9, 13, 14, 18, 1, 2, 3]
+Line 2 [4, 7, 8, 9, 13][14, 18, 1, 2, 3]
+Line 3 [14, 18, 1, 2, 3]
+Line 4[14, 18 , 1]
+Line 5 [18, 1]
+Line 6 [1]
+Line 7 return start (1)
+
+If we had said end = mid - 1, then line 4 would have excluded the 1, which is the answer.
+
+Question : [154. Find Minimum in Rotated Sorted Array II](https://leetcode.com/problems/find-minimum-in-rotated-sorted-array-ii/description/)
+
+```c++
+int findMin(vector<int> &num) {
+    int start = 0;
+    int end = num.size()-1;
+    int mid;
+    while(start<end){
+        if(num[start]<num[end])
+        	break;
+        mid = start+(end-start)/2;
+        if(num[mid]>num[end]){
+            start = mid+1;
+        }
+        else if(num[mid]==num[end]){  // This is the part different from find minimum I. 
+            start++;
+            end--;
+        }
+        else
+        end= mid;
+    }
+    return num[start];
+ }
+```
+
+
+
+## 
+
+
 
 Question: 278. [First Bad Version](https://leetcode.com/problems/first-bad-version/description/)
 
@@ -216,7 +326,7 @@ You may imagine that `nums[-1] = nums[n] = -∞`.
     }
 ```
 
-Binary Search Template III
+## Binary Search Template III
 
 
 
@@ -269,11 +379,33 @@ It is used to search for an element or condition which requires *accessing the 
 
 
 
+## **Other Search**
 
 
 
+Question: 74 [Search a 2D matrix](https://leetcode.com/problems/search-a-2d-matrix/description/) and [240. Search a 2D Matrix II](https://leetcode.com/problems/search-a-2d-matrix-ii/description/)
 
+Search from top right or bottom left. 
 
+```c++
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+    int m = matrix.size();
+    if(m == 0) return false;
+    int n = matrix[0].size();
+    int j = n-1;
+    int i = 0;
+    while(i< m && j>=0){
+        if(matrix[i][j] > target){
+            j--;
+        }else if(matrix[i][j] <target){
+            i++;
+        }else{
+            return true;
+        }
+    }
+    return false;
+}
+```
 
 
 

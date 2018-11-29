@@ -62,6 +62,40 @@ for first row and first col, needs to initialize seperately.
     }
 ```
 
+Question 85 [Maximal Rectangle](https://leetcode.com/problems/maximal-square/description/)
+
+
+$$
+dp(i, j)=min(dp(i−1, j), dp(i−1, j−1), dp(i, j−1))+1.
+$$
+
+```c++
+int maximalSquare(vector<vector<char>>& matrix) {
+        if (matrix.empty()) {
+            return 0;
+        }
+        int m = matrix.size(), n = matrix[0].size(), sz = 0;
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        for (int j = 0; j < n; j++) {
+            dp[0][j] = matrix[0][j] - '0';
+            sz = max(sz, dp[0][j]);
+        }
+        for (int i = 1; i < m; i++) {
+            dp[i][0] = matrix[i][0] - '0';
+            sz = max(sz, dp[i][0]);
+        }
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    dp[i][j] = min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1])) + 1;
+                    sz = max(sz, dp[i][j]);
+                }
+            }
+        }
+        return sz * sz;
+    }
+```
+
 
 
 ## Fibonacci related
@@ -128,6 +162,34 @@ Question: **[Maximum Subarray](https://leetcode.com/problems/maximum-subarray)**
            
       }
   ```
+
+Question  [Perfect Squares](https://leetcode.com/problems/perfect-squares/description/)
+
+```
+dp[0] = 0 
+dp[1] = dp[0]+1 = 1
+dp[2] = dp[1]+1 = 2
+dp[3] = dp[2]+1 = 3
+dp[4] = Min{ dp[4-1*1]+1, dp[4-2*2]+1 } 
+      = Min{ dp[3]+1, dp[0]+1 } 
+      = 1
+```
+
+```c++
+int numSquares(int n) {
+    vector<int> dp(n+1, 0);  
+    for(int i =1; i<= n; i++) {            
+        int min_v = INT_MAX;  
+        for(int j = 1; j*j <= i; j++) {         
+            min_v = min(min_v, dp[i - j*j] +1);  
+        }  
+        dp[i] =min_v;  
+    }                 
+    return dp[n];  
+}
+```
+
+
 
 ## Left and Right:
 
@@ -275,6 +337,153 @@ int largestRectangleArea(vector<int>& heights) {
         return max_area;
     }
 ```
+
+## String and Words Related
+
+[Question 139 Word Break](https://leetcode.com/problems/word-break/description/)
+
+Given a string s and a dictionary of words dict, determine if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+For example, given
+s = "leetcode",
+dict = ["leet", "code"].
+
+Return true because "leetcode" can be segmented as "leet code". [solution]( https://leetcode.com/problems/word-break/solution/)
+
+Thought
+
+m[i]=m[0,j] &&m[j+1,i]
+
+```c++
+bool wordBreak(string s, vector<string>& wordDict) {
+    set <string> dict;
+    for(int i = 0; i< wordDict.size(); i++){
+        dict.insert(wordDict[i]);
+    }
+    int n = s.length();
+    vector<bool> m (n+1,false);
+    m[0] = true;
+    for(int i = 1; i<= n; i++){
+        for(int j=0; j<i; j++){
+            if(m[j]&& (dict.find(s.substr(j,i-j)) != dict.end())){
+                m[i] = true;
+                break;
+            }
+        }
+    }
+
+    return m[n];
+}
+```
+
+Question 140 [Word Break II](https://leetcode.com/problems/word-break-ii/description/)
+
+Idea: following word break I, using dp array to store all the possible words up to index i, 
+
+dp[i] = all words in dp[0,j] + s[j+1,i]
+
+```c++
+vector<string> wordBreakII(string s, vector<string>& wordDict) {
+set <string> dict (wordDict.begin(), wordDict.end());
+	vector<vector<string>> dp (s.size()+1, vector<string>());
+	dp[0] = vector<string> (1,"");
+	int size = s.size();
+	for(int i = 1; i<= size; i++ ){
+		vector<string> v ;
+		for(int j=0; j< i; j++){
+			if(dp[j].size()>0 && ((dict.find(s.substr(j,i-j))) != dict.end()) ){
+				for(string ss: dp[j]){
+					v.push_back(ss+ (ss == "" ? "" : " ")+ s.substr(j,i-j));
+				}
+			}
+		}
+		dp[i] = v;
+	}
+	
+	return dp[size];
+}
+```
+
+Question 97 [Interleaving String](https://leetcode.com/problems/interleaving-string/description/)
+
+So we need to think of the dynamic programming (DP), which usually have much less complexity. In this problem, a 2D DP is more suitable.  As usual, the typical way of solving dp is to find the state, and the optimal function. Here, the state can be considered as: A[i][j], which means S3[i+j] can be formed by S1[i] and S2[j] (for simplicity here string starts from 1, in the code we need to deal with that string starts from 0).  So, we have the optimal function:   A[i][j] =   (s3[i+j]==s1[i]  && match[i-1][j])  || (s3[i+j] ==s2[j] && match[i][j-1]) 
+
+```c++
+bool isInterleave(string s1, string s2, string s3) {
+        int n1 = s1.size();
+        int n2 = s2.size();
+        vector<vector<bool> > A(n1+1,vector<bool>(n2+1,false));
+        if (n1+n2!=s3.size()){return false;}
+        if (s1.empty()&&s2.empty()&&s3.empty()){return true;}
+          
+        A[0][0]=true;    
+        for (int i=1;i<=n1;i++){
+            if (s1[i-1]==s3[i-1] && A[i-1][0]){A[i][0]=true;}
+        }
+        for (int i=1;i<=n2;i++){
+            if (s2[i-1]==s3[i-1] && A[0][i-1]){A[0][i]=true;}
+        }
+                  
+        for (int i=1;i<=n1;i++){
+            for (int j=1;j<=n2;j++){
+                A[i][j]= (A[i][j-1] && (s2[j-1]==s3[i+j-1])) || (A[i-1][j]&& (s1[i-1]==s3[i+j-1]));   
+            }
+        }
+        return A[n1][n2];
+    }
+```
+
+
+
+Question 115 [Question Distinct Subsequence](https://leetcode.com/problems/distinct-subsequences/description/)
+
+Idea:
+
+- we will build an array `mem` where `mem[i+1][j+1]` means that `S[0..j]` contains `T[0..i]` that many times as distinct subsequences. Therefor the result will be `mem[T.length()][S.length()]`.
+- we can build this array rows-by-rows:
+- the first row must be filled with 1. That's because the empty string is a subsequence of any string but only 1 time. So `mem[0][j] = 1` for every `j`. So with this we not only make our lives easier, but we also return correct value if `T` is an empty string.
+- the first column of every rows except the first must be 0. This is because an empty string cannot contain a non-empty string as a substring -- the very first item of the array: `mem[0][0] = 1`, because an empty string contains the empty string 1 time.
+- Transitive function is: dp(i,j) = dp(i-1,j) + (S[i]==S[j]?dp(i-1,j-1):0), where dp(i,j) means the number of distinct subsequences of T[0,..., j] in S[0,...,i].
+
+无论T的字符与S的字符是否匹配，dp[i][j] = dp[i][j - 1].就是说，假设S已经匹配了j - 1个字符，得到匹配个数为dp[i][j - 1].现在无论S[j]是不是和T[i]匹配，匹配的个数至少是dp[i][j - 1]。除此之外，当S[j]和T[i]相等时，我们可以让S[j]和T[i]匹配，然后让S[j - 1]和T[i - 1]去匹配。所以递推关系为：
+
+dp[0][0] = 1; // T和S都是空串.
+
+dp[0][1 ... S.length() - 1] = 1; // T是空串，S只有一种子序列匹配。
+
+dp[1 ... T.length() - 1][0] = 0; // S是空串，T不是空串，S没有子序列匹配。
+
+dp[i][j] = dp[i][j - 1] + (T[i - 1] == S[j - 1] ? dp[i - 1][j - 1] : 0).1 <= i <= T.length(), 1 <= j <= S.length()
+
+
+
+```c++
+int numDistinct(string S, string T) {
+    // array creation
+    vector<vector<int>> mem(T.length()+1, vector<int>(S.length()+1,0));
+    // filling the first row: with 1s
+    for(int j=0; j<=S.length(); j++) {
+        mem[0][j] = 1;
+    }
+
+    // the first column is 0 by default in every other rows but the first, which we need.
+
+    for(int i=0; i<T.length(); i++) {
+        for(int j=0; j<S.length(); j++) {
+            if(T[i] == S[j]) {
+                mem[i+1][j+1] = mem[i][j] + mem[i+1][j];
+            } else {
+                mem[i+1][j+1] = mem[i+1][j];
+            }
+        }
+    }
+
+    return mem[T.length()][S.length()];
+
+   }
+```
+
+
 
 ## Others:
 
@@ -435,5 +644,29 @@ int minDistance(string word1, string word2) {
         }
         return dp[m][n];
     }
+```
+
+Question Burst [Balloons](https://leetcode.com/problems/burst-balloons/description/)
+
+[Thought](https://leetcode.com/problems/burst-balloons/discuss/76230/C++-dp-detailed-explanation) 
+$$
+DP[i][j] = max( DP[i][k-1] + nums[i-1]*nums[k]*nums[j+1] + DP[k+1][j])      i<k<j
+$$
+
+
+```c++
+int maxCoins(vector<int>& nums) {
+    int n = nums.size();
+    nums.insert(nums.begin(), 1);
+    nums.push_back(1);
+    vector<vector<int>> dp(nums.size(), vector<int>(nums.size(), 0));
+    for (int len = 1; len <= n; ++len)
+        for (int left = 1; left <= n - len + 1; ++left) {
+            int right = left + len - 1;
+            for (int k = left; k <= right; ++k)
+                dp[left][right] = max(dp[left][right], nums[left-1]*nums[k]*nums[right+1] + dp[left][k-1] + dp[k+1][right]);
+        }
+    return dp[1][n];
+}
 ```
 
