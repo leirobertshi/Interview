@@ -509,15 +509,46 @@ bool isMatch(string s, string p) {
         vector<vector<bool> > dp(m + 1, vector<bool> (n + 1, false));
         dp[0][0] = true;
         for (int i = 0; i <= m; i++)
-            for (int j = 1; j <= n; j++)
+            for (int j = 1; j <= n; j++) // start with j = 1, because all j =0 case dp[*][0] == 0, since when pattern is empty, you can't match anything.
                 if (p[j - 1] == '*')
-                    dp[i][j] = dp[i][j - 2] || (i > 0 && (s[i - 1] == p[j - 2] || p[j - 2] == '.') && dp[i - 1][j]);
-                else dp[i][j] = i > 0 && dp[i - 1][j - 1] && (s[i - 1] == p[j - 1] || p[j - 1] == '.');
+                    dp[i][j] = dp[i][j - 2] || // * repeat 0 times
+                    (i > 0 && (s[i - 1] == p[j - 2] || p[j - 2] == '.') && dp[i - 1][j]); // repeat more than one times.
+                else dp[i][j] = i > 0 && dp[i - 1][j - 1] && (s[i - 1] == p[j - 1] || p[j - 1] == '.'); // not *
         return dp[m][n];
     }
 ```
 
- 
+ Question: [WildCard Matching](https://leetcode.com/problems/wildcard-matching/description/) 
+
+solution 1; DP https://leetcode.com/problems/wildcard-matching/discuss/17812/My-java-DP-solution-using-2D-table
+
+solution 2: Greedy http://yucoding.blogspot.com/2013/02/leetcode-question-123-wildcard-matching.html
+
+```c++
+    bool isMatch(string s, string p) {
+        int s_len = s.length();
+        int p_len = p.length();
+        // if(s_len == 0 && p_len != 0) return false;
+        // if(s_len == 0 && p_len == 0) return true;
+        vector<vector<int>> dp (s_len+1, vector<int> (p_len+1,0));
+        dp[0][0] = 1;
+        
+        
+        for(int i = 0 ;i<=s_len; i++){
+            for(int j=1; j<=p_len; j++){
+                if( i>0 && (p[j-1] == '?' || (p[j-1] == s[i-1]))) {
+                    dp[i][j] = dp[i-1][j-1];
+                }else if (p[j-1] == '*'){
+                    dp[i][j] = dp[i][j-1] || ( i>0 && dp[i-1][j]);   
+                }
+                 
+            }
+        }
+        
+        return dp[s_len][p_len] ==1;
+        
+    }
+```
 
 Question : **[ Longest Valid Parentheses](https://leetcode.com/problems/longest-valid-parentheses)** Given a string containing just the characters `'('` and `')'`, find the length of the longest valid (well-formed) parentheses substring.
 
