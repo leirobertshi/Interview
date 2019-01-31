@@ -321,3 +321,49 @@ void nextPermutation(vector<int>& nums) {
 }
 ```
 
+Question Subset
+
+Given a set of **distinct** integers, *nums*, return all possible subsets (the power set).
+
+**Note:** The solution set must not contain duplicate subsets. The same as combination on the top. 
+
+ 
+
+```
+Input: nums = [1,2,3]
+Output:
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+```
+
+
+
+```c++
+    vector<vector<int>> subsets(vector<int>& S) {
+        sort(S.begin(), S.end()); //
+        vector<vector<int> > result;
+        vector<int> path;
+        dfs(S, S.begin(), path, result);
+        return result;
+    }
+    
+    void dfs(const vector<int> &S, vector<int>::iterator start,
+vector<int> &path, vector<vector<int> > &result) {
+result.push_back(path);
+    for (auto i = start; i < S.end(); i++) {
+        // if (i != start && *i == *(i-1)) continue;
+        path.push_back(*i);
+        dfs(S, i + 1, path, result);
+        path.pop_back();
+    }
+    }
+```
+
