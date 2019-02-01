@@ -3,8 +3,7 @@
 ## a list of questions on leetcode
 https://articles.leetcode.com/category/binary-tree/
 
-Question: Saving a Binary Search Tree to a File
-u
+**Question: Saving a Binary Search Tree to a File**
 
 se preorder traversal
 
@@ -31,7 +30,7 @@ void readBST(BinaryTree *&root, ifstream &fin) {
 
 ```
 
-Question: Saving a Binary Tree to a file
+**Question: Saving a Binary Tree to a file**
 
 ```c++
 void writeBinaryTree(BinaryTree *p, ostream &out) {
@@ -45,7 +44,7 @@ void writeBinaryTree(BinaryTree *p, ostream &out) {
 }
 ```
 
-Read from file to Binary tree
+**Read from file to Binary tree**
 
 ```c++
 void readBinaryTree(BinaryTree *&p, ifstream &fin) {
@@ -61,7 +60,7 @@ void readBinaryTree(BinaryTree *&p, ifstream &fin) {
 }
 ```
 
-Question: Serialization/Deserialization of a Binary Tree
+**Question: Serialization/Deserialization of a Binary Tree**
 use Preorder Travel with sentinel. 
 
 ```c++
@@ -89,7 +88,7 @@ void readBinaryTree(BinaryTree *&p, ifstream &fin) {
 }
 ```
 
-Question: Print Edge of Binary tree
+**Question: Print Edge of Binary tree**
 
 Thought and solution: [solution](https://articles.leetcode.com/print-edge-nodes-boundary-of-binary/)
 
@@ -136,7 +135,7 @@ public:
 ```
 Question:
 
-Larget BST in Binary Tree
+**Larget BST in Binary Tree**
 
 https://articles.leetcode.com/largest-binary-search-tree-bst-in_22/
 
@@ -191,7 +190,7 @@ BinaryTree* findLargestBST(BinaryTree *root) {
 
 
 
-Question: Largest subtree BST in a Binary Tree
+**Question: Largest subtree BST in a Binary Tree**
 
 ```c++
 
@@ -232,6 +231,42 @@ BinaryTree* findLargestBSTSubtree(BinaryTree *root) {
   int maxNodes = INT_MIN;
   findLargestBSTSubtree(root, min, max, maxNodes, largestBST);
   return largestBST;
+}
+```
+
+**Question: Least Common Ancestor of a Binary Tree**
+
+```c++
+// This is bottom up solution with O(n), bottom up from recursion.
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    if (!root) return NULL;
+    if (root == p || root == q) return root;
+    TreeNode *left = lowestCommonAncestor(root->left, p, q);
+    TreeNode *right = lowestCommonAncestor(root->right, p, q);
+    if (left && right) return root;  // if p and q are on both sides
+    if (left != NULL) return left;
+    	else return right; // return either side which has p or q.
+}
+```
+
+Question: Least Common Ancestor of a Binary tree, knowing the parent node
+
+```c++
+Node *LCA(Node *root, Node *p, Node *q) {
+  hash_set<Node *> visited;
+  while (p || q) {
+    if (p) {
+      if (!visited.insert(p).second)
+        return p; // insert p failed (p exists in the table)
+      p = p->parent;
+    }
+    if (q) {
+      if (!visited.insert(q).second)
+        return q; // insert q failed (q exists in the table)
+      q = q->parent;
+    }
+  }
+  return NULL;
 }
 ```
 
