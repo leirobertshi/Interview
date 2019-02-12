@@ -139,6 +139,30 @@ Question 19 Common Combination
 
 Given two integers *n* and *k*, return all possible combinations of *k* numbers out of 1 ... *n*.
 
+```c++
+// preferred version
+vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>> res;
+        vector<int> temp;
+        if(n<1|| k<1 || n<k) return res;
+        dfs(res, temp, 1,n,k);
+        
+        return res;
+    }
+    
+   void dfs(vector<vector<int>> & res, vector<int> & temp, int start, int n, int k){
+        if(temp.size() == k){
+            res.push_back(temp);
+            return;
+        }
+        for(int i=start; i<=n; i++ ){
+            temp.push_back(i);
+            dfs(res, temp,i+1,n,k);
+            temp.pop_back();
+        }
+    }
+```
+
 
 
 ```c++
@@ -197,14 +221,14 @@ public: void doTeleWords(string phoneNum, int size, string &str, vector<string> 
 	}
 
 	int number = phoneNum[size] -'0';
-    // if(number <0 || number > 9) exit(1);
+    // if(number <2 || number > 9) exit(1);
 
     string temp = getchars(number);
     for (int j = 0; j <temp.length(); j++) {
         char c = temp[j];
         str.push_back(c);
         doTeleWords(phoneNum, size + 1, str, res);
-        str.erase(str.begin() + str.length() - 1);
+        str.pop_back();
     }
 
     }
@@ -298,8 +322,6 @@ When we figure out the first element of the list,when i = 2 we find that nums[2]
 only. The same rule continues on the next steps so every list we generated will reach to an end and return.
 
 That why !use[i - 1] is better. Hope that my explanation is clear enough.
-
-
 
 Question next Permutation
 
