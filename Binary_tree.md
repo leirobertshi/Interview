@@ -1,5 +1,25 @@
 # Related Questions
 
+## Index:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## a list of questions on leetcode
 https://articles.leetcode.com/category/binary-tree/
 
@@ -88,6 +108,8 @@ void readBinaryTree(BinaryTree *&p, ifstream &fin) {
 }
 ```
 
+## II Printing Level and Edge of Binary Tree
+
 **Question: Print Edge of Binary tree**
 
 Thought and solution: [solution](https://articles.leetcode.com/print-edge-nodes-boundary-of-binary/)
@@ -133,7 +155,114 @@ public:
     }
 };
 ```
-Question:
+Question: Binary Tree Zigzag Level Order Traversal https://leetcode.com/problems/binary-tree-zigzag-level-order-traversal/
+
+// use two stacks
+
+```c++
+void printLevelOrderZigZag(TreeNode *root) {
+
+	stack<TreeNode*> currentLevel, nextLevel;
+	bool leftToRight = true;
+	currentLevel.push(root);
+	while (!currentLevel.empty()) {
+		TreeNode *currNode = currentLevel.top();
+		currentLevel.pop();
+		if (currNode) {
+			cout << currNode->val << " ";
+			if (leftToRight) {
+				nextLevel.push(currNode->left);
+				nextLevel.push(currNode->right);
+			} else {
+				nextLevel.push(currNode->right);
+				nextLevel.push(currNode->left);
+			}
+		}
+		if (currentLevel.empty()) {
+			cout << endl;
+			leftToRight = !leftToRight;
+			swap(currentLevel, nextLevel);
+		}
+	}
+}
+
+void swap(stack<TreeNode*> &stack1, stack<TreeNode*> &stack2) {
+	stack<TreeNode*> tempStack = stack1;
+	stack1 = stack2;
+	stack2 = tempStack;
+}
+```
+
+
+
+## III DFS tree
+
+Question : print the deepestPath of BST
+
+```c++
+void printDeepestPath(TreeNode *root, stack<TreeNode*> &path,
+		stack<TreeNode*> &result) {
+
+	if (root == NULL)
+		return;
+	path.push(root);
+	if (root->left == NULL && root->right == NULL) {
+		if (path.size() > result.size()) {
+			result = path;
+		}
+	}
+
+	if (root->left)
+		printDeepestPath(root->left, path, result);
+	if (root->right)
+		printDeepestPath(root->right, path, result);
+
+	path.pop();
+}
+```
+
+
+
+## IV Traveral Related
+
+Question: [Inorder Successor in BST](https://leetcode.com/problems/inorder-successor-in-bst/) 
+
+```c++
+
+TreeNode * Tree::findNextInorderNode(TreeNode* root, TreeNode * n) {
+    // 1. if n has right node, then right nodes leftMost is the result.
+    if( n->right != NULL )
+        return minValue(n->right);
+    // 2. if not then find the parent.
+    TreeNode *succ = NULL;
+    // Start from root and search for successor down the tree
+    while (root != NULL)
+    {
+        if (n->val < root->val)
+        {
+            succ = root;
+            root = root->left;
+        }
+        else if (n->val > root->val)
+            root = root->right;
+        else
+           break;
+    }
+    return succ;
+}
+
+TreeNode * Tree::leftMostNode(TreeNode * node) {
+    TreeNode* current = node;
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL) {
+      current = current->left;
+    }
+    return current;
+}
+
+```
+
+
 
 **Larget BST in Binary Tree**
 
@@ -235,6 +364,10 @@ BinaryTree* findLargestBSTSubtree(BinaryTree *root) {
 ```
 
 **Question: Least Common Ancestor of a Binary Tree**
+
+Here what we need to know is how to do the bottom-up way recursively traversal the tree and solve the similar problem.
+
+ 
 
 ```c++
 // This is bottom up solution with O(n), bottom up from recursion.
