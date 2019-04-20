@@ -64,7 +64,7 @@
 
 Question LRU cache
 
-```
+```c++
 class LRUCache{
 private:
 struct CacheNode {
