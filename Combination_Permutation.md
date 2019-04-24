@@ -1,21 +1,20 @@
+# Combination and Permutation Questions
+
 ### **Question 39** [Combination Sum I](https://leetcode.com/problems/combination-sum/description/) (**each number can be used for unlimited times**)
 
 Idea:
 
 1. Sort the candidate array first so as to generate non-descending order results.[Optional]
-
 2. If target > 0, recursively call:
-
-   - combinationSum(candidate, i, target - candidate[i]), i = start ... N - 1
-   - if target == 0, found the item.
+   combinationSum(candidate, i, target - candidate[i]), i = start ... N - 1
+    if target == 0, found the item.
 
 3. Avoid duplicated combinations
 
     (two ways):
 
-   - skip candidate[i] if candidate[i] == candidate[i - 1], i > start; (Backtracking)
-   - 
-   - '[don't add the list if listSet.contains(list). (DFS)
+   skip candidate[i] if candidate[i] == candidate[i - 1], i > start; (Backtracking)
+   '[don't add the list if listSet.contains(list). (DFS)
 
 ```c++
 class Solution {
@@ -106,7 +105,7 @@ private:
 };
 ```
 
-Question [[Combination III]](https://leetcode.com/problems/combination-sum-iii/description/) 
+### Question [[Combination III]](https://leetcode.com/problems/combination-sum-iii/description/) 
 
 ```c++
 public:
@@ -135,7 +134,7 @@ private:
 
 
 
-Question 19 Common Combination 
+### Question 19 Common Combination 
 
 Given two integers *n* and *k*, return all possible combinations of *k* numbers out of 1 ... *n*.
 
@@ -196,7 +195,7 @@ public:
 
 
 
-Question: [Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/submissions/1)
+### Question: [Letter Combinations of a Phone Number](https://leetcode.com/problems/letter-combinations-of-a-phone-number/submissions/1)
 
 
 
@@ -242,7 +241,7 @@ public: string getchars(int num){
 
 
 
-Question [Permutation](https://leetcode.com/problems/permutations/description/)
+### Question [Permutation](https://leetcode.com/problems/permutations/description/)
 
 ```c++
     vector<vector<int>> permute(vector<int>& nums) {
@@ -343,7 +342,7 @@ void nextPermutation(vector<int>& nums) {
 }
 ```
 
-Question Subset
+### Question Subset
 
 Given a set of **distinct** integers, *nums*, return all possible subsets (the power set).
 
@@ -389,7 +388,7 @@ result.push_back(path);
     }
 ```
 
-[Increasing Subsequence](https://leetcode.com/problems/increasing-subsequences/)
+### [Increasing Subsequence](https://leetcode.com/problems/increasing-subsequences/)
 
 Given an integer array, your task is to find all the different possible increasing subsequences of the given array, and the length of an increasing subsequence should be at least 2 .
 

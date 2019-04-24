@@ -1,22 +1,4 @@
-# Related Questions
-
-## Index:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Binary Tree Related Questions
 
 
 
@@ -108,7 +90,7 @@ void readBinaryTree(BinaryTree *&p, ifstream &fin) {
 }
 ```
 
-## II Printing Level and Edge of Binary Tree
+## IIPrinting Level and Edge of Binary Tree
 
 **Question: Print Edge of Binary tree**
 
@@ -197,8 +179,44 @@ void swap(stack<TreeNode*> &stack1, stack<TreeNode*> &stack2) {
 
 ## III DFS tree
 
-Question : print the deepestPath of BST
+**Question : print the deepestPath of BST**
+Pattern:
+use backtracking
 
+```
+0. if head == null, return
+1. result.push_back(head)
+2. check if the head is leaf node, then do something
+3. check if the head left node, go to left 
+4. check if the heard right node, go to right, 
+5. result.pop_back(head);
+```
+
+**Question :  dfs for the tree **
+```c++
+void Tree::dfstree(vector<TreeNode*> result, TreeNode* head) {
+
+	if (head == NULL)
+		return;
+	result.push_back(head);
+	// if find the leaf TreeNode, stop there and print out the path.
+	if (head->left == NULL && head->right == NULL) {
+		for (size_t i = 0; i < result.size(); i++) {
+			cout << result[i]->val << " ";
+		}
+		cout << endl;
+	}
+	// if there is left TreeNode, go to the left TreeNode.
+	if (head->left)
+		dfstree(result, head->left);
+	// if there is right TreeNode, go to the right TreeNode.
+	if (head->right)
+		dfstree(result, head->right);
+	// pop out the last TreeNode and go back to the upper level.
+	result.pop_back();
+}
+```
+**Question: Print The DeepestPaht of tree**
 ```c++
 void printDeepestPath(TreeNode *root, stack<TreeNode*> &path,
 		stack<TreeNode*> &result) {
@@ -211,7 +229,6 @@ void printDeepestPath(TreeNode *root, stack<TreeNode*> &path,
 			result = path;
 		}
 	}
-
 	if (root->left)
 		printDeepestPath(root->left, path, result);
 	if (root->right)
@@ -221,7 +238,49 @@ void printDeepestPath(TreeNode *root, stack<TreeNode*> &path,
 }
 ```
 
+**Question 129: sum Root to leaf numbers  **
+```c++
+int sumNumbers(TreeNode* root) {
+    int sum = 0;
+    int temp = 0;
+    dfs(root, temp, sum);
+    return sum;
+}
 
+void dfs(TreeNode* root, int temp, int& sum){
+    if(root == NULL) return;
+    temp = temp*10+ root->val;
+    if(root->left == NULL && root->right == NULL)
+        sum += temp;
+    if(root->left != NULL)
+        dfs(root->left, temp, sum);
+    if(root->right != NULL)
+        dfs(root->right, temp, sum);
+}
+```
+** Question 124: Binary Tree Maximum Path Sum II **
+There are several options: 
+- if left path is bigger than 0, including the left path, otherwise not including
+- if right path is bigger than 0, including the right path, otherwise not including
+- The return part only return either left or right sub-path plus current node value, 
+
+```c++
+
+int maxPathSum(TreeNode* root) {
+    int result=INT_MIN;
+    help(root, result);
+    return result;
+}
+/*** return the max-value-ended-at-root-node ***/
+int help(TreeNode* root, int& result){
+    if(!root)    return 0;
+    int left=max(0, help(root->left, result));
+    int right=max(0, help(root->right, result));
+    /*** key parts : embedding the max-value-find in the recursion process ***/
+    result=max(result, left+right+root->val);
+    return max(left, right)+root->val;
+}
+```
 
 ## IV Traveral Related
 
